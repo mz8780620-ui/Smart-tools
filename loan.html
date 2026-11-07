@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free loan EMI calculator. Calculate monthly payment, total interest, and total cost of your loan.">
+<title>Loan / EMI Calculator - Smart Daily Tools</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <select id="langSelect" onchange="changeLanguage(this.value)" class="lang-select">
+    <option value="en">🇬🇧 English</option>
+    <option value="bn">🇧🇩 বাংলা</option>
+    <option value="hi">🇮🇳 हिन्दी</option>
+    <option value="ar">🇸🇦 العربية</option>
+    <option value="es">🇪🇸 Español</option>
+  </select>
+</div>
+
+<header>
+  <a href="index.html"><h1 data-i18n="siteTitle">Smart Daily Tools</h1></a>
+  <p data-i18n="loanTitle">Loan / EMI Calculator</p>
+</header>
+
+<div class="ad-space" data-i18n="advertisement">Advertisement Space</div>
+
+<div class="container">
+  <a href="index.html" class="back-link" data-i18n="backHome">← Back to Home</a>
+
+  <div class="tool-card">
+    <h2 data-i18n="loanTitle">Loan / EMI Calculator</h2>
+    <div class="input-group">
+      <label data-i18n="loanAmount">Loan Amount</label>
+      <input type="number" id="loanAmount" data-i18n-placeholder="loanAmount" placeholder="e.g. 10000">
+    </div>
+    <div class="input-group">
+      <label data-i18n="loanRate">Interest Rate (%) per year</label>
+      <input type="number" id="loanRate" data-i18n-placeholder="loanRate" placeholder="e.g. 5.5">
+    </div>
+    <div class="input-group">
+      <label data-i18n="loanTerm">Loan Term (Years)</label>
+      <input type="number" id="loanTerm" data-i18n-placeholder="loanTerm" placeholder="e.g. 3">
+    </div>
+    <button class="btn" onclick="calculateLoan()" data-i18n="calcMonthly">Calculate Monthly Payment</button>
+    <div id="loanResult" class="result-box">
+      <h3 id="monthlyPayment">0</h3>
+      <p data-i18n="monthlyEMI">Monthly EMI Payment</p>
+      <p style="margin-top:10px;"><span data-i18n="totalPayment">Total Payment</span>: <b id="totalPayment">0</b></p>
+      <p><span data-i18n="totalInterest">Total Interest</span>: <b id="totalInterest">0</b></p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p data-i18n="footer">© 2026 Smart Daily Tools.</p>
+</footer>
+
+<script src="lang.js"></script>
+<script>
+function calculateLoan() {
+  const amount = parseFloat(document.getElementById('loanAmount').value);
+  const annualRate = parseFloat(document.getElementById('loanRate').value);
+  const years = parseFloat(document.getElementById('loanTerm').value);
+
+  if (isNaN(amount) || isNaN(annualRate) || isNaN(years) || amount <= 0 || years <= 0) {
+    alert(t('alertValidPositive'));
+    return;
+  }
+
+  const monthlyRate = annualRate / 100 / 12;
+  const months = years * 12;
+  let payment;
+
+  if (monthlyRate === 0) {
+    payment = amount / months;
+  } else {
+    payment = (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months));
+  }
+
+  const total = payment * months;
+  const interest = total - amount;
+
+  document.getElementById('loanResult').style.display = 'block';
+  document.getElementById('monthlyPayment').innerText = payment.toFixed(2);
+  document.getElementById('totalPayment').innerText = total.toFixed(2);
+  document.getElementById('totalInterest').innerText = interest.toFixed(2);
+}
+</script>
+</body>
+</html>
