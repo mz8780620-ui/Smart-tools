@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free percentage calculator. Find X percent of Y instantly.">
+<title>Percentage Calculator - Smart Daily Tools</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <select id="langSelect" onchange="changeLanguage(this.value)" class="lang-select">
+    <option value="en">🇬🇧 English</option>
+    <option value="bn">🇧🇩 বাংলা</option>
+    <option value="hi">🇮🇳 हिन्दी</option>
+    <option value="ar">🇸🇦 العربية</option>
+    <option value="es">🇪🇸 Español</option>
+  </select>
+</div>
+
+<header>
+  <a href="index.html"><h1 data-i18n="siteTitle">Smart Daily Tools</h1></a>
+  <p data-i18n="pctTitle">Percentage Calculator</p>
+</header>
+
+<div class="ad-space" data-i18n="advertisement">Advertisement Space</div>
+
+<div class="container">
+  <a href="index.html" class="back-link" data-i18n="backHome">← Back to Home</a>
+
+  <div class="tool-card">
+    <h2 data-i18n="pctTitle">Percentage Calculator</h2>
+    <div class="input-group">
+      <label data-i18n="pctQuestion">What is X% of Y?</label>
+      <div style="display: flex; gap: 10px;">
+        <input type="number" id="pctX" placeholder="X (%)">
+        <input type="number" id="pctY" placeholder="Y">
+      </div>
+    </div>
+    <button class="btn" onclick="calculatePercentage()" data-i18n="calcMonthly">Calculate</button>
+    <div id="pctResult" class="result-box">
+      <h3 id="pctOutput">0</h3>
+      <p data-i18n="result">Result</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p data-i18n="footer">© 2026 Smart Daily Tools.</p>
+</footer>
+
+<script src="lang.js"></script>
+<script>
+function calculatePercentage() {
+  const x = parseFloat(document.getElementById('pctX').value);
+  const y = parseFloat(document.getElementById('pctY').value);
+
+  if (isNaN(x) || isNaN(y)) {
+    alert(t('alertValidNum'));
+    return;
+  }
+
+  const result = (x / 100) * y;
+  document.getElementById('pctResult').style.display = 'block';
+  document.getElementById('pctOutput').innerText = result;
+}
+</script>
+</body>
+</html>
