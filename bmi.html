@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free BMI calculator. Check your Body Mass Index and health category instantly. Supports Metric and Imperial units.">
+<title>BMI Calculator - Smart Daily Tools</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-bar">
+  <select id="langSelect" onchange="changeLanguage(this.value)" class="lang-select">
+    <option value="en">🇬🇧 English</option>
+    <option value="bn">🇧🇩 বাংলা</option>
+    <option value="hi">🇮🇳 हिन्दी</option>
+    <option value="ar">🇸🇦 العربية</option>
+    <option value="es">🇪🇸 Español</option>
+  </select>
+</div>
+
+<header>
+  <a href="index.html"><h1 data-i18n="siteTitle">Smart Daily Tools</h1></a>
+  <p data-i18n="bmiTitle">BMI Calculator</p>
+</header>
+
+<div class="ad-space" data-i18n="advertisement">Advertisement Space</div>
+
+<div class="container">
+  <a href="index.html" class="back-link" data-i18n="backHome">← Back to Home</a>
+
+  <div class="tool-card">
+    <h2 data-i18n="bmiTitle">BMI Calculator</h2>
+    
+    <!-- ইউনিট সিলেক্টর -->
+    <div class="input-group">
+      <label data-i18n="unitSystem">Unit System</label>
+      <select id="unitSystem" class="lang-select" style="width: 100%; padding: 12px; font-size: 16px; border-radius: 8px;" onchange="toggleUnits()">
+        <option value="metric" data-i18n="metric">Metric (kg, cm)</option>
+        <option value="imperial" data-i18n="imperial">Imperial (lbs, ft/in)</option>
+      </select>
+    </div>
+
+    <!-- মেট্রিক ইনপুট -->
+    <div id="metricInputs">
+      <div class="input-group">
+        <label data-i18n="weightKg">Weight (kg)</label>
+        <input type="number" id="bmiWeightKg" placeholder="e.g. 70">
+      </div>
+      <div class="input-group">
+        <label data-i18n="heightCm">Height (cm)</label>
+        <input type="number" id="bmiHeightCm" placeholder="e.g. 175">
+      </div>
+    </div>
+
+    <!-- ইম্পেরিয়াল ইনপুট -->
+    <div id="imperialInputs" style="display: none;">
+      <div class="input-group">
+        <label data-i18n="weightLbs">Weight (lbs)</label>
+        <input type="number" id="bmiWeightLbs" placeholder="e.g. 154">
+      </div>
+      <div class="input-group">
+        <label data-i18n="heightFtIn">Height (ft & in)</label>
+        <div style="display: flex; gap: 10px;">
+          <input type="number" id="bmiHeightFt" placeholder="Feet (e.g. 5)">
+          <input type="number" id="bmiHeightIn" placeholder="Inches (e.g. 9)">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="calculateBMI()" data-i18n="calcBMI">Calculate BMI</button>
+    
+    <div id="bmiResult" class="result-box">
+      <h3 id="bmiScore">0</h3>
+      <p id="bmiStatus">Status</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p data-i18n="footer">© 2026 Smart Daily Tools.</p>
+</footer>
+
+<script src="lang.js"></script>
+<script>
+let lastBMI = null;
+
+// ইউনিট পরিবর্তন করার ফাংশন
+function toggleUnits() {
+  const system = document.getElementById('unitSystem').value;
+  if (system === 'metric') {
+    document.getElementById('metricInputs').style.display = 'block';
+    document.getElementById('imperialInputs').style.display = 'none';
+  } else {
+    document.getElementById('metricInputs').style.display = 'none';
+    document.getElementById('imperialInputs').style.display = 'block';
+  }
+}
+
+function calculateBMI() {
+  const system = document.getElementById('unitSystem').value;
+  let weightKg, heightM;
+
+  if (system === 'metric') {
+    weightKg = parseFloat(document.getElementById('bmiWeightKg').value);
+    const heightCm = parseFloat(document.getElementById('bmiHeightCm').value);
+
+    if (isNaN(weightKg) || isNaN(heightCm) || weightKg <= 0 || heightCm <= 0) {
+      alert(t('alertValidPositive'));
+      return;
+    }
+    heightM = heightCm / 100;
+  } 
+  else {
+    const weightLbs = parseFloat(document.getElementById('bmiWeightLbs').value);
+    const heightFt = parseFloat(document.getElementById('bmiHeightFt').value) || 0;
+    const heightIn = parseFloat(document.getElementById('bmiHeightIn').value) || 0;
+
+    if (isNaN(weightLbs) || weightLbs <= 0 || (heightFt === 0 && heightIn === 0)) {
+      alert(t('alertValidPositive'));
+      return;
+    }
+
+    // পাউন্ড থেকে কেজি
+    weightKg = weightLbs * 0.453592;
+    // ফুট ও ইঞ্চি থেকে মিটার
+    const totalInches = (heightFt * 12) + heightIn;
+    heightM = totalInches * 0.0254;
+  }
+
+  lastBMI = weightKg / (heightM * heightM);
+  renderBMI();
+}
+
+function renderBMI() {
+  if (lastBMI === null) return;
+  let statusKey = "";
+  if (lastBMI < 18.5) statusKey = "underweight";
+  else if (lastBMI < 25) statusKey = "normalWeight";
+  else if (lastBMI < 30) statusKey = "overweight";
+  else statusKey = "obese";
+
+  document.getElementById('bmiResult').style.display = 'block';
+  document.getElementById('bmiScore').innerText = lastBMI.toFixed(1);
+  document.getElementById('bmiStatus').innerText = t(statusKey);
+}
+
+window.onLanguageChange = renderBMI;
+</script>
+</body>
+</html>
